@@ -1,4 +1,4 @@
-#0x00. MySQL advanced
+# 0x00. MySQL advanced
 
 1. How to create tables with constraints
 2. How to optimize queries by adding indexes
