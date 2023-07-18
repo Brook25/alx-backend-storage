@@ -10,10 +10,10 @@ class Cache:
     def __init__(self):
         """Init method"""
         self._redis = redis.Redis()
-        self._redis.flushall()
+        self._redis.flushdb()
 
     def store(self, data: Union[str, bytes, int, float]) -> None:
-        """store a value with a key method"""
+        """Method stores a given value with a key"""
         key = str(uuid.uuid4())
         self._redis.set(key, data)
         return key
