@@ -20,7 +20,9 @@ class Cache:
 
     def get(self, key: str, fn: Optional[Callable]):
         """Returns a value in the desired format"""
-        if fn and callable(fn) and key:
+        if not callable(fn):
+            raise ValueError
+        if fn and key:
             return fn(self._redis.get(key))
         return self._redis.get(key)
 
