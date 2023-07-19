@@ -7,10 +7,12 @@ from functools import wraps
 
 
 def count_calls(fn: Callable) -> Callable:
-    """decorator func with a wrapper to count number of call on cache.store"""
+    '''decorator func with a wrapper to count number of call on cache.store
+    '''
     @wraps(fn)
     def wrapper(self, *args, **kwargs) -> Any:
-        """wrapper fn that does the counting and store the result in redisdb"""
+        '''wrapper fn that does the counting and store the result in redisdb
+        '''
         self._redis.incr(fn.__qualname__)
         return fn(self, *args, **kwargs)
     return wrapper
@@ -41,6 +43,6 @@ class Cache:
         """parametrizes get() with a method that converts to str"""
         return self.get(key, lambda b: b.decode("utf-8"))
 
-    def get_int(seld, key: str) -> int:
+    def get_int(self, key: str) -> int:
         """parametrizes get() with a method that converts to int"""
         return self.get(key, lambda b: int(b))
