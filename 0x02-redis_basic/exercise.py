@@ -9,12 +9,12 @@ from functools import wraps
 def count_calls(method: Callable) -> Callable:
     '''decorator func with a wrapper to count number of call on cache.store
     '''
-    @wraps(fn)
+    @wraps(method)
     def wrapper(self, *args, **kwargs) -> Any:
         '''wrapper fn that does the counting and store the result in redisdb
         '''
         self._redis.incr(method.__qualname__)
-        return fn(self, *args, **kwargs)
+        return method(self, *args, **kwargs)
     return wrapper
 
 
