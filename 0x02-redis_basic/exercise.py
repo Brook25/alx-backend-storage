@@ -24,9 +24,9 @@ def call_history(method: Callable) -> Callable:
     def wrapper(self, *args, **kwargs) -> Any:
         '''wrapper stores arguments passed'''
         self._redis.rpush(method.__qualname__ + ":inputs", str(args))
-        self._redis.rpush(method.__qualname__ + ":outputs",
-                          method(self, args[0]))
-        return method(self, *args, **kwargs)
+        output = method(self, args[0])
+        self._redis.rpush(method.__qualname__ + ":outputs", output)
+        return output
     return wrapper
 
 
@@ -59,3 +59,20 @@ class Cache:
     def get_int(self, key: str) -> int:
         """parametrizes get() with a method that converts to int"""
         return self.get(key, lambda b: int(b))
+
+
+
+cache = Cache()
+
+s1 = cache.store("first")
+print(s1)
+s2 = cache.store("secont")
+print(s2)
+s3 = cache.store("third")
+print(s3)
+
+inputs = cache._redis.lrange("{}:inputs".format(cache.store.__qualname__), 0, -1)
+outputs = cache._redis.lrange("{}:outputs".format(cache.store.__qualname__), 0, -1)
+
+print("inputs: {}".format(inputs))
+print("outputs: {}".format(outputs))
