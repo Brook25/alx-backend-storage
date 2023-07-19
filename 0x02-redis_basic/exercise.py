@@ -6,14 +6,14 @@ from typing import Union, Optional, Callable, Any
 from functools import wraps
 
 
-def count_calls(fn: Callable) -> Callable:
+def count_calls(method: Callable) -> Callable:
     '''decorator func with a wrapper to count number of call on cache.store
     '''
     @wraps(fn)
     def wrapper(self, *args, **kwargs) -> Any:
         '''wrapper fn that does the counting and store the result in redisdb
         '''
-        self._redis.incr(fn.__qualname__)
+        self._redis.incr(method.__qualname__)
         return fn(self, *args, **kwargs)
     return wrapper
 
