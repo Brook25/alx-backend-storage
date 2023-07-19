@@ -21,7 +21,7 @@ def count_calls(method: Callable) -> Callable:
 def call_history(method: Callable) -> Callable:
     '''decorator that stores arguments passed to method'''
     @wraps(method)
-    def wrapper(self, *args, **kwargs) -> Any:
+    def wrapper(self, *args, **kwargs):
         '''wrapper stores arguments passed'''
         self._redis.rpush(method.__qualname__ + ":inputs", str(args))
         output = method(self, *args, **kwargs)
@@ -37,8 +37,8 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-    @count_calls
     @call_history
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Method stores a given value with a key"""
         key = str(uuid.uuid4())
