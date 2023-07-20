@@ -30,6 +30,21 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(method: Callable) -> None:
+    '''function prints out the history of a Cache method'''
+    if method:
+        _redis = getattr(method.__self__, '_redis', None)
+        if _redis:
+            met_key = method.__qualname__
+            inputs = _redis.lrange(met_key + ":inputs", 0, -1)
+            outputs = _redis.lrange(met_key + ":outputs", 0, -1)
+            print('{} was called {} times'.format(met_key, int(_redis.get(met_key))))
+            for _in, out in zip(inputs, outputs):
+                print("{}(*{}) -> {}".format(met_key, _in.decode('utf-8'), out))
+
+
+
+
 class Cache:
     """Redis caching class"""
     def __init__(self):
@@ -59,4 +74,3 @@ class Cache:
     def get_int(self, key: str) -> int:
         """parametrizes get() with a method that converts to int"""
         return self.get(key, lambda b: int(b))
-
