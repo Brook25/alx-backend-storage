@@ -19,7 +19,6 @@ def count_url(fn: typing.Callable) -> typing.Callable:
         count = r.incr("count:{}".format(*args))
         if int(count) == 1:
             r.expire("count:{}".format(*args), 60)
-        print(count)
         return fn(*args, **kwargs)
     return wrapper
 
