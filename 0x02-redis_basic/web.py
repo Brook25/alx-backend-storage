@@ -17,11 +17,13 @@ def count_url(fn: typing.Callable) -> typing.Callable:
     @wraps(fn)
     def wrapper(*args, **kwargs):
         '''modifies get_page'''
-        r.incr("count:{}".format(*args))
-        res = fn(*args)
-        if not r.get("res:{}".format(*args)):
+        count = r.incr("count:{}".format(*args))
+        cached = r.get("res:{}".format(*args))
+        if not cached:
+            res = fn(*args)
             r.setex("res:{}".format(*args), 10, res)
-        return res
+            return res
+        return cached
     return wrapper
 
 
