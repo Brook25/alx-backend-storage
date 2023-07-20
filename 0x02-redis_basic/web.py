@@ -6,11 +6,12 @@ from functools import wraps
 import redis
 
 
+r = redis.Redis()
+
 def count_url(fn: typing.Callable) -> typing.Callable:   
     '''decorator counts number of requests
         to a url.
     '''
-    r = redis.Redis()
     
     @wraps(fn)
     def wrapper(*args, **kwargs):
